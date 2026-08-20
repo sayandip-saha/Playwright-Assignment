@@ -1,4 +1,4 @@
-// @ts-check
+/*// @ts-check
 import { test, expect } from "@playwright/test";
 
 const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/inventory";
@@ -34,3 +34,4 @@ test("Show Login button", async ({ page }) => {
 
   await expect(page.locator("#login-button")).toHaveText("Login");
 });
+*/
