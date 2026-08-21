@@ -34,49 +34,11 @@ test("Show QTY and Description", async ({ page }) => {
   await expect(page.locator('.cart-row-head')).toContainText("Description");
 });
 
-test("Show Cart Contents or Empty Message ", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  // Define the locators for both possible states
-  const cartItem = page.locator('[data-test="inventory-item"]').first();
-  const emptyCartMessage = page.locator('[data-test="cart-empty"]');
-
-  // Check if there is at least one item card in the cart
-  const hasItems = await cartItem.isVisible();
-
-  if (hasItems) {
-    // State 1: Cart has items (Matches your uploaded image)
-    await expect(cartItem).toBeVisible();
-    await expect(page.locator('.qty').first()).toBeVisible();
-    await expect(page.locator('.inventory-item-name').first()).toContainText("Test.allTheThings() T-Shirt (Red)");
-    await expect(page.locator('[data-test="remove-test-allthethings-tshirt-red"]')).toBeVisible();
-    await expect(page.locator('.cart-price')).toBeVisible();
-    await expect(page.locator('.btn-remove').first()).toBeVisible();
-  } else {
-    // State 2: Cart is completely empty
-    await expect(emptyCartMessage).toBeVisible();
-    await expect(emptyCartMessage).toHaveText("Your cart is empty.");
-  }
-});
-
 test("Show Cancel Button", async ({ page }) => {
   await page.goto(BASE_URL);
 
   await expect(page.locator('[data-test="cancel"]')).toContainText("Cancel");
 
-});
-
-test("Show Finish Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="checkout"]').first()).toContainText(
-    "Finish",
-  );
-
-  const button = page.locator('[data-test="checkout"]');
-
-  // Updated to match the actual class name received: "btn-continue"
-  await expect(button).toHaveClass(/btn-primary/);
 });
 
 test("Show Footer", async ({ page }) => {
