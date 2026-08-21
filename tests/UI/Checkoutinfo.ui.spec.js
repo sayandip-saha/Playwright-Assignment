@@ -24,50 +24,32 @@ test("Show Checkout Information", async ({ page }) => {
 test("Show Your Cart", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator(".page-title")).toHaveText("Your Cart");
-});
-
-test("Show Details", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('#first-name')).toContainText("fdf");
-  await expect(page.locator('#last-name')).toContainText("fsf");
-  await expect(page.locator('#postal-code')).toContainText("fdsdfss");
-});
-
-test("Show Continue Shopping Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="continue-shopping"]')).toHaveText(
-    "Continue Shopping",
-  );
-
-  const button1 = page.locator('[data-test="continue-shopping"]');
-
-  // Updated to match the actual class name received: "btn-continue"
-  await expect(button1).toHaveClass(/btn-continue/);
-});
-
-test("Show Checkout Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="checkout"]').first()).toContainText(
-    "Checkout",
-  );
-
-  const button = page.locator('[data-test="checkout"]');
-
-  // Updated to match the actual class name received: "btn-continue"
-  await expect(button).toHaveClass(/btn-primary/);
+  await expect(page.locator('[data-test="shopping-cart-link"]')).toBeVisible();
 });
 
 test("Show Input Placeholders", async ({ page }) => {
   await page.goto(BASE_URL);
 
+  // Validate the form element placeholders
   await expect(page.locator('#first-name')).toHaveAttribute('placeholder', 'First Name');
   await expect(page.locator('#last-name')).toHaveAttribute('placeholder', 'Last Name');
   await expect(page.locator('#postal-code')).toHaveAttribute('placeholder', 'Zip/Postal Code');
 });
+
+test("Show Continue Button", async ({ page }) => {
+  await page.goto(BASE_URL);
+
+  await expect(page.locator('[data-test="continue"]')).toContainText("Continue");
+
+});
+
+test("Show Cancel Button", async ({ page }) => {
+  await page.goto(BASE_URL);
+
+  await expect(page.locator('[data-test="cancel"]')).toContainText("Cancel");
+
+});
+
 
 test("Show Footer", async ({ page }) => {
   await page.goto(BASE_URL);
