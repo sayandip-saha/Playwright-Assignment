@@ -4,13 +4,13 @@ import users from "../../data/users.js";
 
 const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/";
 
-test("show home page title", async ({ page }) => {
+test("Show home page title", async ({ page }) => {
   await page.goto(BASE_URL);
 
   await expect(page.locator(".tta-brand-title")).toHaveText("TTACart");
 });
 
-test("show login card", async ({ page }) => {
+test("Show Login card", async ({ page }) => {
   await page.goto(BASE_URL);
 
   page.locator(".login-card");
@@ -18,7 +18,7 @@ test("show login card", async ({ page }) => {
   await expect(page.locator("#password")).toBeVisible();
 });
 
-test("show login hint", async ({ page }) => {
+test("Show Login hint", async ({ page }) => {
   await page.goto(BASE_URL);
 
   page.locator(".login-hint");
