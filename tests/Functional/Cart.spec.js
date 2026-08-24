@@ -56,9 +56,7 @@ test("Cart should show correct product quantity", async ({ page }) => {
 
 test("Remove product from cart", async ({ page }) => {
   // Go to Products
-  await page.goto(
-    "https://app.thetestingacademy.com/playwright/ttacart/inventory",
-  );
+  await page.goto("https://app.thetestingacademy.com/playwright/ttacart/inventory");
 
   const firstProduct = page.locator('[data-test="inventory-item"]').first();
 
