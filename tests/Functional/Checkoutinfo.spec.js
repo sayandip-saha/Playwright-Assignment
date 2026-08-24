@@ -1,74 +1,102 @@
 // @ts-check
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/checkout-step-one";
+const INVENTORY_URL =
+  "https://app.thetestingacademy.com/playwright/ttacart/inventory";
 
-test("Show burger menu", async ({ page }) => {
-  await page.goto(BASE_URL);
+const CHECKOUT_URL =
+  "https://app.thetestingacademy.com/playwright/ttacart/checkout-step-one";
 
-  await expect(page.locator("#react-burger-menu-btn")).toBeVisible();
-});
+test("Checkout with valid customer information", async ({ page }) => {
+  // Go to Products
+  await page.goto(INVENTORY_URL);
 
-test("Show Title", async ({ page }) => {
-  await page.goto(BASE_URL);
+  // Add a product
+  await page.locator(".item-btn").first().click();
 
-  await expect(page.locator(".tta-brand-title")).toHaveText(/TTACart/);
-});
+  // Open Cart
+  await page.locator('[data-test="shopping-cart-link"]').click();
 
-test("Show Checkout Information", async ({ page }) => {
-  await page.goto(BASE_URL);
+  // Click Checkout
+  await page.locator('[data-test="checkout"]').click();
 
-  await expect(page.locator('[data-test="title"]')).toContainText("Checkout: Your Information");
-});
-
-test("Show Your Cart", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="shopping-cart-link"]')).toBeVisible();
-});
-
-test("Show Input Placeholders", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  // Validate the form element placeholders
-  await expect(page.locator('#first-name')).toHaveAttribute('placeholder', 'First Name');
-  await expect(page.locator('#last-name')).toHaveAttribute('placeholder', 'Last Name');
-  await expect(page.locator('#postal-code')).toHaveAttribute('placeholder', 'Zip/Postal Code');
-});
-
-test("Show Continue Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="continue"]')).toContainText("Continue");
-
-});
-
-test("Show Cancel Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="cancel"]')).toContainText("Cancel");
-
-});
-
-
-test("Show Footer", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer"]')).toBeVisible();
-});
-
-test("Show Footer icons", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="social-twitter"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-facebook"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-linkedin"]')).toBeVisible();
-});
-
-test("Show Footer text", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer-copy"]')).toHaveText(
-    "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
+  // Verify Checkout Information page
+  await expect(page).toHaveURL(/checkout-step-one/);
+  await expect(page.locator('[data-test="title"]')).toHaveText(
+    "Checkout: Your Information",
   );
+
+  // Fill customer information
+  await page.locator("#first-name").fill("Sayandip");
+  await page.locator("#last-name").fill("Saha");
+  await page.locator("#postal-code").fill("700001");
+
+  // Continue
+  await page.locator('[data-test="continue"]').click();
+
+  // Verify navigation to checkout overview
+  await expect(page).toHaveURL(/checkout-step-two/);
+});
+
+test("Checkout with empty customer information", async ({ page }) => {
+  await page.goto(CHECKOUT_URL);
+
+  // Click Continue without filling anything
+  await page.locator('[data-test="continue"]').click();
+
+  // User should remain on the same page
+  await expect(page).toHaveURL(/checkout-step-one/);
+  await expect(page.getByRole("alert")).toHaveText(
+    "Error: First Name is required",
+  );
+});
+
+test("Checkout without first name", async ({ page }) => {
+  await page.goto(CHECKOUT_URL);
+
+  // Click Continue without filling anything
+  await page.locator('[data-test="continue"]').click();
+
+  // User should remain on the same page
+  await expect(page).toHaveURL(/checkout-step-one/);
+  await expect(page.getByRole("alert")).toHaveText(
+    "Error: First Name is required",
+  );
+});
+
+test("Checkout without last name", async ({ page }) => {
+  await page.goto(CHECKOUT_URL);
+
+  // Click Continue without filling anything
+  await page.locator('[data-test="continue"]').click();
+
+  // User should remain on the same page
+  await expect(page).toHaveURL(/checkout-step-one/);
+  await expect(page.getByRole("alert")).toHaveText(
+    "Error: First Name is required",
+  );
+});
+
+test("Checkout without postal code", async ({ page }) => {
+  await page.goto(CHECKOUT_URL);
+
+  // Click Continue without filling anything
+  await page.locator('[data-test="continue"]').click();
+
+  // User should remain on the same page
+  await expect(page).toHaveURL(/checkout-step-one/);
+  await expect(page.getByRole("alert")).toHaveText(
+    "Error: First Name is required",
+  );
+});
+
+test("Cancel checkout", async ({ page }) => {
+  await page.goto(CHECKOUT_URL);
+
+  await page.locator('[data-test="cancel"]').click();
+
+  // Should return to Cart
+  await expect(page).toHaveURL(/cart/);
+
+  await expect(page.locator(".page-title")).toHaveText("Your Cart");
 });

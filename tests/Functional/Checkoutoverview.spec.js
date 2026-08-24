@@ -1,81 +1,137 @@
 // @ts-check
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/checkout-step-two";
+const INVENTORY_URL =
+  "https://app.thetestingacademy.com/playwright/ttacart/inventory";
 
-test("Show burger menu", async ({ page }) => {
-  await page.goto(BASE_URL);
+test("Checkout overview displays customer order", async ({ page }) => {
+  // Go to Products
+  await page.goto(INVENTORY_URL);
 
-  await expect(page.locator("#react-burger-menu-btn")).toBeVisible();
-});
+  // Add product
+  await page.locator(".item-btn").first().click();
 
-test("Show Title", async ({ page }) => {
-  await page.goto(BASE_URL);
+  // Open Cart
+  await page.locator('[data-test="shopping-cart-link"]').click();
 
-  await expect(page.locator(".tta-brand-title")).toHaveText(/TTACart/);
-});
+  // Click Checkout
+  await page.locator('[data-test="checkout"]').click();
 
-test("Show Checkout Title", async ({ page }) => {
-  await page.goto(BASE_URL);
+  // Fill customer information
+  await page.locator("#first-name").fill("User");
+  await page.locator("#last-name").fill("User");
+  await page.locator("#postal-code").fill("700001");
 
-  await expect(page.locator('[data-test="title"]')).toContainText("Checkout: Overview");
-});
+  // Continue to Overview
+  await page.locator('[data-test="continue"]').click();
 
-test("Show Your Cart", async ({ page }) => {
-  await page.goto(BASE_URL);
+  // Verify Overview page
+  await expect(page).toHaveURL(/checkout-step-two/);
 
-  await expect(page.locator('[data-test="shopping-cart-link"]')).toBeVisible();
-});
-
-test("Show QTY and Description", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('.cart-row-head')).toContainText("QTY");
-  await expect(page.locator('.cart-row-head')).toContainText("Description");
-});
-
-test("Show Product Summary", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator(".summary-block")).toContainText("Payment Information:");
-  await expect(page.locator(".summary-block")).toContainText("Shipping Information:");
-  await expect(page.locator(".summary-block")).toContainText("Price Total");
-  await expect(page.locator(".summary-block")).toContainText("Total:");
-
-});
-
-test("Show Cancel Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="cancel"]')).toContainText("Cancel");
-
-});
-
-test("Show Finish Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="finish"]')).toContainText("Finish");
-
-});
-
-test("Show Footer", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer"]')).toBeVisible();
-});
-
-test("Show Footer icons", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="social-twitter"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-facebook"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-linkedin"]')).toBeVisible();
-});
-
-test("Show Footer text", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer-copy"]')).toHaveText(
-    "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
+  await expect(page.locator('[data-test="title"]')).toHaveText(
+    "Checkout: Overview",
   );
+
+  // Verify order summary
+  await expect(page.locator(".summary-block")).toContainText(
+    "Payment Information:",
+  );
+
+  await expect(page.locator(".summary-block")).toContainText(
+    "Shipping Information:",
+  );
+
+  await expect(page.locator(".summary-block")).toContainText("Price Total");
+
+  await expect(page.locator(".summary-block")).toContainText("Total:");
+});
+
+test("Added product should appear in checkout overview", async ({ page }) => {
+  await page.goto(INVENTORY_URL);
+
+  const firstProduct = page.locator('[data-test="inventory-item"]').first();
+
+  const productName = await firstProduct
+    .locator('[data-test="inventory-item-name"]')
+    .textContent();
+
+  expect(productName).not.toBeNull();
+
+  // Add product
+  await firstProduct.locator(".item-btn").click();
+
+  // Cart
+  await page.locator('[data-test="shopping-cart-link"]').click();
+
+  // Checkout
+  await page.locator('[data-test="checkout"]').click();
+
+  // Customer information
+  await page.locator("#first-name").fill("User");
+  await page.locator("#last-name").fill("User");
+  await page.locator("#postal-code").fill("700001");
+
+  // Overview
+  await page.locator('[data-test="continue"]').click();
+
+  // Verify product
+  await expect(page.getByText(productName, { exact: true })).toBeVisible();
+});
+
+test("Finish checkout successfully", async ({ page }) => {
+  await page.goto(INVENTORY_URL);
+
+  // Add product
+  await page.locator(".item-btn").first().click();
+
+  // Cart
+  await page.locator('[data-test="shopping-cart-link"]').click();
+
+  // Checkout
+  await page.locator('[data-test="checkout"]').click();
+
+  // Fill information
+  await page.locator("#first-name").fill("User");
+  await page.locator("#last-name").fill("User");
+  await page.locator("#postal-code").fill("700001");
+
+  // Go to overview
+  await page.locator('[data-test="continue"]').click();
+
+  // Finish order
+  await page.locator('[data-test="finish"]').click();
+
+  // Verify successful order
+  await expect(page).toHaveURL(/checkout-complete/);
+
+  // Verify confirmation
+  await expect(page.locator(".page-title")).toHaveText("Checkout: Complete!");
+});
+
+test("Cancel checkout from overview", async ({ page }) => {
+  await page.goto(INVENTORY_URL);
+
+  // Add product
+  await page.locator(".item-btn").first().click();
+
+  // Cart
+  await page.locator('[data-test="shopping-cart-link"]').click();
+
+  // Checkout
+  await page.locator('[data-test="checkout"]').click();
+
+  // Fill information
+  await page.locator("#first-name").fill("User");
+  await page.locator("#last-name").fill("User");
+  await page.locator("#postal-code").fill("700001");
+
+  // Overview
+  await page.locator('[data-test="continue"]').click();
+
+  // Cancel
+  await page.locator('[data-test="cancel"]').click();
+
+  // Verify return to Cart
+  await expect(page).toHaveURL(/cart/);
+  await expect(page.locator(".page-title")).toHaveText("Your Cart");
 });

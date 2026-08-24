@@ -8,129 +8,121 @@ const firstProduct = productList[0];
 const BASE_URL =
   "https://app.thetestingacademy.com/playwright/ttacart/inventory";
 
-test("Show burger menu", async ({ page }) => {
+test("Add product to cart", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator("//button[@id='react-burger-menu-btn']//*[name()='svg']")).toBeVisible();
-});
-
-test("Show Title", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.getByText('TTACart', { exact: true })).toHaveText(/TTACart/);
-});
-
-test("Show Cart", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator("//*[name()='path' and contains(@d,'M3 3h2l2.4')]")).toBeVisible();
-});
-
-test("Cart badge visibility", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  const cartBadge = page.locator('[data-test="shopping-cart-badge"]');
   const addToCartButton = page.locator(".item-btn").first();
+  const cartBadge = page.locator('[data-test="shopping-cart-badge"]');
 
-  // Initially cart is empty, so badge should NOT be visible
-  await expect(cartBadge).not.toBeVisible();
+  // Verify product can be added
+  await expect(addToCartButton).toContainText("Add to cart");
 
-  // Add first product to cart
   await addToCartButton.click();
 
-  // Now cart has an item, so badge should be visible
+  // Button should change to Remove
+  await expect(addToCartButton).toContainText("Remove");
+
+  // Cart badge should appear
   await expect(cartBadge).toBeVisible();
+
+  // Cart should contain 1 item
+  await expect(cartBadge).toHaveText("1");
 });
 
-test("Show Products", async ({ page }) => {
+test("Remove product from cart", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator(".page-title")).toHaveText("Products");
+  const productButton = page.locator(".item-btn").first();
+  const cartBadge = page.locator('[data-test="shopping-cart-badge"]');
+
+  // Add product
+  await productButton.click();
+
+  // Verify cart badge
+  await expect(cartBadge).toBeVisible();
+  await expect(cartBadge).toHaveText("1");
+
+  // Remove product
+  await productButton.click();
+
+  // Button should change back to Add to cart
+  await expect(productButton).toContainText("Add to cart");
+
+  // Cart badge should disappear
+  await expect(cartBadge).not.toBeVisible();
 });
 
-test("Show Filter", async ({ page }) => {
+test("Cart badge updates when multiple products are added", async ({
+  page,
+}) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator(".sort-wrap")).toBeVisible();
+  const productButtons = page.locator(".item-btn");
+  const cartBadge = page.locator('[data-test="shopping-cart-badge"]');
+
+  // Add first product
+  await productButtons.nth(0).click();
+
+  await expect(cartBadge).toHaveText("1");
+
+  // Add second product
+  await productButtons.nth(1).click();
+
+  await expect(cartBadge).toHaveText("2");
+
+  // Add third product
+  await productButtons.nth(2).click();
+
+  await expect(cartBadge).toHaveText("3");
 });
 
-test("Show Cards", async ({ page }) => {
+test("Added product should appear in cart", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(
-    page.locator('[data-test="inventory-item"]').first(),
-  ).toContainText(firstProduct.name);
+  const firstProduct = page.locator('[data-test="inventory-item"]').first();
+
+  const productName = await firstProduct
+    .locator('[data-test="inventory-item-name"]')
+    .textContent();
+
+  expect(productName).not.toBeNull();
+
+  // Add product
+  await firstProduct.locator(".item-btn").click();
+
+  // Open cart
+  await page.locator('[data-test="shopping-cart-link"]').click();
+
+  // Verify product is in cart
+  await expect(page.getByText(productName, { exact: true })).toBeVisible();
 });
 
-test("Show Card Picture", async ({ page }) => {
+test("Product price should be displayed in cart", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(
-    page.locator('[data-test="item-img-link"]').first(),
-  ).toBeVisible();
+  const firstProduct = page.locator('[data-test="inventory-item"]').first();
+
+  const productPrice = await firstProduct
+    .locator('[data-test="inventory-item-price"]')
+    .textContent();
+
+  expect(productPrice).not.toBeNull();
+
+  // Add product
+  await firstProduct.locator(".item-btn").click();
+
+  // Open cart
+  await page.locator('[data-test="shopping-cart-link"]').click();
+
+  // Verify price is displayed in cart
+  await expect(page.getByText(productPrice, { exact: true })).toBeVisible();
 });
 
-test("Show Card Title", async ({ page }) => {
+test("Product initially shows Add to cart", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(
-    page.locator('[data-test="inventory-item-name"]').first(),
-  ).toBeVisible();
-});
+  const productButton = page.locator(".item-btn").first();
 
-test("Show Card Description", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(
-    page.locator('[data-test="inventory-item-desc"]').first(),
-  ).toBeVisible();
-});
-
-test("Show Card Price", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(
-    page.locator('[data-test="inventory-item-price"]').first(),
-  ).toBeVisible();
-});
-
-test("Show Add to Cart or Remove Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  const addToCartButton = page.locator('.item-btn').first();
-  const removeButton = page.locator('.item-btn is-remove').first();
-
-  // Check the immediate visibility state of the Add to Cart button
-  const isAddToCartVisible = await addToCartButton.isVisible();
-
-  if (isAddToCartVisible) {
-    // If Add to Cart is there, verify its text
-    await expect(addToCartButton).toContainText("Add to cart");
-  } else {
-    // If Add to Cart is NOT visible, verify the Remove button instead
-    await expect(removeButton).toBeVisible();
-    await expect(removeButton).toContainText("Remove");
-  }
-});
-
-test("Show Footer", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer"]')).toBeVisible();
-});
-
-test("Show Footer icons", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="social-twitter"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-facebook"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-linkedin"]')).toBeVisible();
-});
-
-test("Show Footer text", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer-copy"]')).toHaveText(
-    "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
-  );
+  await expect(productButton).toBeVisible();
+  await expect(productButton).toContainText("Add to cart");
 });
