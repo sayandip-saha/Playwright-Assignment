@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from "@playwright/test";
 
-const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/checkout-step-two";
+const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/checkout-step-one";
 
 test("Show burger menu", async ({ page }) => {
   await page.goto(BASE_URL);
@@ -15,10 +15,10 @@ test("Show Title", async ({ page }) => {
   await expect(page.locator(".tta-brand-title")).toHaveText(/TTACart/);
 });
 
-test("Show Checkout Title", async ({ page }) => {
+test("Show Checkout Information", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator('[data-test="title"]')).toContainText("Checkout: Overview");
+  await expect(page.locator('[data-test="title"]')).toContainText("Checkout: Your Information");
 });
 
 test("Show Your Cart", async ({ page }) => {
@@ -27,20 +27,19 @@ test("Show Your Cart", async ({ page }) => {
   await expect(page.locator('[data-test="shopping-cart-link"]')).toBeVisible();
 });
 
-test("Show QTY and Description", async ({ page }) => {
+test("Show Input Placeholders", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator('.cart-row-head')).toContainText("QTY");
-  await expect(page.locator('.cart-row-head')).toContainText("Description");
+  // Validate the form element placeholders
+  await expect(page.locator('#first-name')).toHaveAttribute('placeholder', 'First Name');
+  await expect(page.locator('#last-name')).toHaveAttribute('placeholder', 'Last Name');
+  await expect(page.locator('#postal-code')).toHaveAttribute('placeholder', 'Zip/Postal Code');
 });
 
-test("Show Product Summary", async ({ page }) => {
+test("Show Continue Button", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator(".summary-block")).toContainText("Payment Information:");
-  await expect(page.locator(".summary-block")).toContainText("Shipping Information:");
-  await expect(page.locator(".summary-block")).toContainText("Price Total");
-  await expect(page.locator(".summary-block")).toContainText("Total:");
+  await expect(page.locator('[data-test="continue"]')).toContainText("Continue");
 
 });
 
@@ -51,12 +50,6 @@ test("Show Cancel Button", async ({ page }) => {
 
 });
 
-test("Show Finish Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="finish"]')).toContainText("Finish");
-
-});
 
 test("Show Footer", async ({ page }) => {
   await page.goto(BASE_URL);

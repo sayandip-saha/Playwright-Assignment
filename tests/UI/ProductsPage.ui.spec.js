@@ -11,19 +11,35 @@ const BASE_URL =
 test("Show burger menu", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator("#react-burger-menu-btn")).toBeVisible();
+  await expect(page.locator("//button[@id='react-burger-menu-btn']//*[name()='svg']")).toBeVisible();
 });
 
 test("Show Title", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator(".tta-brand-title")).toHaveText(/TTACart/);
+  await expect(page.getByText('TTACart', { exact: true })).toHaveText(/TTACart/);
 });
 
 test("Show Cart", async ({ page }) => {
   await page.goto(BASE_URL);
 
-  await expect(page.locator('[data-test="shopping-cart-link"]')).toBeVisible();
+  await expect(page.locator("//*[name()='path' and contains(@d,'M3 3h2l2.4')]")).toBeVisible();
+});
+
+test("Cart badge visibility", async ({ page }) => {
+  await page.goto(BASE_URL);
+
+  const cartBadge = page.locator('[data-test="shopping-cart-badge"]');
+  const addToCartButton = page.locator(".item-btn").first();
+
+  // Initially cart is empty, so badge should NOT be visible
+  await expect(cartBadge).not.toBeVisible();
+
+  // Add first product to cart
+  await addToCartButton.click();
+
+  // Now cart has an item, so badge should be visible
+  await expect(cartBadge).toBeVisible();
 });
 
 test("Show Products", async ({ page }) => {
