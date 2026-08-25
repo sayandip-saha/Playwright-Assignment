@@ -1,108 +1,94 @@
 // @ts-check
+
 import { test, expect } from "@playwright/test";
+import CartPage from "../../pages/CartPage.js";
 
-const BASE_URL = "https://app.thetestingacademy.com/playwright/ttacart/cart";
+test.describe("Cart Page UI", () => {
+  test("Show burger menu", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.burgerMenu).toBeVisible();
+  });
 
-test("Show burger menu", async ({ page }) => {
-  await page.goto(BASE_URL);
+  test("Show Title", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.brandTitle).toHaveText(/TTACart/);
+  });
 
-  await expect(page.locator("#react-burger-menu-btn")).toBeVisible();
-});
+  test("Show Cart", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.cartTitle).toBeVisible();
+  });
 
-test("Show Title", async ({ page }) => {
-  await page.goto(BASE_URL);
+  test("Show Your Cart", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.pageTitle).toHaveText("Your Cart");
+  });
 
-  await expect(page.locator(".tta-brand-title")).toHaveText(/TTACart/);
-});
+  test("Show QTY and Description", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.cartHeader).toContainText("QTY");
+    await expect(cartPage.cartHeader).toContainText("Description");
+  });
 
-test("Show Cart", async ({ page }) => {
-  await page.goto(BASE_URL);
+  test("Show Cart Contents or Empty Message", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    const hasItems = await cartPage.cartItems.first().isVisible();
 
-  await expect(page.locator('[data-test="title"]')).toBeVisible();
-});
+    if (hasItems) {
+      await expect(cartPage.cartItems.first()).toBeVisible();
+      await expect(cartPage.quantity.first()).toBeVisible();
+      await expect(cartPage.cartProductNames.first()).toContainText(
+        "Test.allTheThings() T-Shirt (Red)",
+      );
+      await expect(cartPage.cartPrices.first()).toBeVisible();
+      await expect(cartPage.removeButtons.first()).toBeVisible();
+    } else {
+      await expect(cartPage.emptyCartMessage).toBeVisible();
+      await expect(cartPage.emptyCartMessage).toHaveText("Your cart is empty.");
+    }
+  });
 
-test("Show Your Cart", async ({ page }) => {
-  await page.goto(BASE_URL);
+  test("Show Continue Shopping Button", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.continueShoppingButton).toHaveText(
+      "Continue Shopping",
+    );
+    await expect(cartPage.continueShoppingButton).toHaveClass(/btn-continue/);
+  });
 
-  await expect(page.locator(".page-title")).toHaveText("Your Cart");
-});
+  test("Show Checkout Button", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.checkoutButton).toContainText("Checkout");
+    await expect(cartPage.checkoutButton).toHaveClass(/btn-primary/);
+  });
 
-test("Show QTY and Description", async ({ page }) => {
-  await page.goto(BASE_URL);
+  test("Show Footer", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.footer).toBeVisible();
+  });
 
-  await expect(page.locator('.cart-row-head')).toContainText("QTY");
-  await expect(page.locator('.cart-row-head')).toContainText("Description");
-});
+  test("Show Footer icons", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.twitterIcon).toBeVisible();
+    await expect(cartPage.facebookIcon).toBeVisible();
+    await expect(cartPage.linkedinIcon).toBeVisible();
+  });
 
-test("Show Cart Contents or Empty Message ", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  // Define the locators for both possible states
-  const cartItem = page.locator('[data-test="inventory-item"]').first();
-  const emptyCartMessage = page.locator('[data-test="cart-empty"]');
-
-  // Check if there is at least one item card in the cart
-  const hasItems = await cartItem.isVisible();
-
-  if (hasItems) {
-    // State 1: Cart has items (Matches your uploaded image)
-    await expect(cartItem).toBeVisible();
-    await expect(page.locator('.qty').first()).toBeVisible();
-    await expect(page.locator('.inventory-item-name').first()).toContainText("Test.allTheThings() T-Shirt (Red)");
-    await expect(page.locator('[data-test="remove-test-allthethings-tshirt-red"]')).toBeVisible();
-    await expect(page.locator('.cart-price')).toBeVisible();
-    await expect(page.locator('.btn-remove').first()).toBeVisible();
-  } else {
-    // State 2: Cart is completely empty
-    await expect(emptyCartMessage).toBeVisible();
-    await expect(emptyCartMessage).toHaveText("Your cart is empty.");
-  }
-});
-
-test("Show Continue Shopping Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="continue-shopping"]')).toHaveText(
-    "Continue Shopping",
-  );
-
-  const button1 = page.locator('[data-test="continue-shopping"]');
-
-  // Updated to match the actual class name received: "btn-continue"
-  await expect(button1).toHaveClass(/btn-continue/);
-});
-
-test("Show Checkout Button", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="checkout"]').first()).toContainText(
-    "Checkout",
-  );
-
-  const button = page.locator('[data-test="checkout"]');
-
-  // Updated to match the actual class name received: "btn-continue"
-  await expect(button).toHaveClass(/btn-primary/);
-});
-
-test("Show Footer", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer"]')).toBeVisible();
-});
-
-test("Show Footer icons", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="social-twitter"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-facebook"]')).toBeVisible();
-  await expect(page.locator('[data-test="social-linkedin"]')).toBeVisible();
-});
-
-test("Show Footer text", async ({ page }) => {
-  await page.goto(BASE_URL);
-
-  await expect(page.locator('[data-test="footer-copy"]')).toHaveText(
-    "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
-  );
+  test("Show Footer text", async ({ page }) => {
+    const cartPage = new CartPage(page);
+    await cartPage.goto();
+    await expect(cartPage.footerText).toHaveText(
+      "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
+    );
+  });
 });

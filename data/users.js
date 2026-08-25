@@ -1,4 +1,4 @@
-module.exports = {
+const users = {
   standardUser: {
     username: "standard_user",
     password: "tta_secret",
@@ -29,3 +29,5 @@ module.exports = {
     password: "tta_secret",
   }
 };
+
+export default users;
