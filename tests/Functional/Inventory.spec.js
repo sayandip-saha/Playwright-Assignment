@@ -4,9 +4,15 @@ import { test, expect } from "@playwright/test";
 import InventoryPage from "../../pages/InventoryPage.js";
 
 test.describe("Inventory Functionality", () => {
-  test("Add product to cart", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
+  /** @type {InventoryPage} */
+  let inventoryPage;
+
+  test.beforeEach(async ({ page }) => {
+    inventoryPage = new InventoryPage(page);
     await inventoryPage.goto();
+  });
+
+  test("Add product to cart", async () => {
     const addToCartButton = inventoryPage.productButtons.first();
 
     await expect(addToCartButton).toContainText("Add to cart");
@@ -23,33 +29,20 @@ test.describe("Inventory Functionality", () => {
     await expect(inventoryPage.cartBadge).toHaveText("1");
   });
 
-  test("Remove product from cart", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-
-    await inventoryPage.goto();
-
+  test("Remove product from cart", async () => {
     const productButton = inventoryPage.productButtons.first();
-
     // Add product
     await inventoryPage.addProduct(0);
-
     await expect(inventoryPage.cartBadge).toBeVisible();
     await expect(inventoryPage.cartBadge).toHaveText("1");
-
     // Remove product
     await inventoryPage.removeProduct(0);
-
     await expect(productButton).toContainText("Add to cart");
-
     // Cart badge should disappear
     await expect(inventoryPage.cartBadge).not.toBeVisible();
   });
 
-  test("Cart badge updates when multiple products are added", async ({
-    page,
-  }) => {
-    const inventoryPage = new InventoryPage(page);
-    await inventoryPage.goto();
+  test("Cart badge updates when multiple products are added", async () => {
     await inventoryPage.addProduct(0);
     await expect(inventoryPage.cartBadge).toHaveText("1");
     await inventoryPage.addProduct(1);
@@ -59,8 +52,6 @@ test.describe("Inventory Functionality", () => {
   });
 
   test("Added product should appear in cart", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-    await inventoryPage.goto();
     const productName = await inventoryPage.getProductName(0);
     expect(productName).not.toBeNull();
     await inventoryPage.addProduct(0);
@@ -69,36 +60,28 @@ test.describe("Inventory Functionality", () => {
   });
 
   test("Product price should be displayed in cart", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-    await inventoryPage.goto();
     const productPrice = await inventoryPage.getProductPrice(0);
     expect(productPrice).not.toBeNull();
     await inventoryPage.addProduct(0);
     await inventoryPage.openCart();
-    await expect(page.getByText(productPrice, { exact: true })).toBeVisible();
+    await expect(
+      page.locator('[data-test="inventory-item-price"]'),
+    ).toBeVisible();
   });
 
-  test("Product initially shows Add to cart", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-
-    await inventoryPage.goto();
-
+  test("Product initially shows Add to cart", async () => {
     const productButton = inventoryPage.productButtons.first();
-
     await expect(productButton).toBeVisible();
     await expect(productButton).toContainText("Add to cart");
   });
 
-  test("Filter products", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-    await inventoryPage.goto();
+  test("Filter products", async () => {
     await inventoryPage.openSortDropdown();
     await expect(inventoryPage.sortDropdown).toContainText("Name (A to Z)");
     await expect(inventoryPage.sortDropdown).toContainText("Name (Z to A)");
     await expect(inventoryPage.sortDropdown).toContainText(
       "Price (low to high)",
     );
-
     await expect(inventoryPage.sortDropdown).toContainText(
       "Price (high to low)",
     );

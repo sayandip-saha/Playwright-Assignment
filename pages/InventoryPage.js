@@ -7,16 +7,10 @@ class InventoryPage {
   constructor(page) {
     this.page = page;
     // Header
-    this.burgerMenu = page.locator(
-      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
-    );
+    this.burgerMenu = page.getByRole("button", { name: "Open menu" });
     this.brandTitle = page.getByText("TTACart", { exact: true });
-    this.cartIcon = page.locator(
-      "//*[name()='path' and contains(@d,'M3 3h2l2.4')]",
-    );
-    this.cartLink = page.locator(
-      "//a[@id='shopping_cart_container']//*[name()='svg']",
-    );
+    this.cartIcon = page.locator("a[id='shopping_cart_container'] svg");
+    this.cartLink = page.getByRole("link", { name: "Shopping cart" });
     this.cartBadge = page.locator('[data-test="shopping-cart-badge"]');
     // Page
     this.pageTitle = page.getByText("Products", { exact: true });

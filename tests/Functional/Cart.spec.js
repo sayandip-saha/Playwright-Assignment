@@ -5,16 +5,22 @@ import InventoryPage from "../../pages/InventoryPage.js";
 import CartPage from "../../pages/CartPage.js";
 
 test.describe("Cart Functionality", () => {
-  test("Show empty cart", async ({ page }) => {
-    const cartPage = new CartPage(page);
+  /** @type {InventoryPage} */
+  let inventoryPage;
+  /** @type {CartPage} */
+  let cartPage;
+  test.beforeEach(async ({ page }) => {
+    inventoryPage = new InventoryPage(page);
+    cartPage = new CartPage(page);
+  });
+
+  test("Show empty cart", async () => {
     await cartPage.goto();
     await expect(cartPage.emptyCartMessage).toBeVisible();
     await expect(cartPage.emptyCartMessage).toHaveText("Your cart is empty.");
   });
 
   test("Added product should appear in cart", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-    const cartPage = new CartPage(page);
     await inventoryPage.goto();
     const productName = await inventoryPage.getProductName(0);
     expect(productName).not.toBeNull();
@@ -24,18 +30,14 @@ test.describe("Cart Functionality", () => {
     await expect(page.getByText(productName, { exact: true })).toBeVisible();
   });
 
-  test("Cart should show correct product quantity", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-    const cartPage = new CartPage(page);
+  test("Cart should show correct product quantity", async () => {
     await inventoryPage.goto();
     await inventoryPage.addProduct(0);
     await inventoryPage.openCart();
     await expect(cartPage.quantity.first()).toHaveText("1");
   });
 
-  test("Remove product from cart", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-    const cartPage = new CartPage(page);
+  test("Remove product from cart", async () => {
     await inventoryPage.goto();
     await inventoryPage.addProduct(0);
     await inventoryPage.openCart();
@@ -46,7 +48,6 @@ test.describe("Cart Functionality", () => {
   });
 
   test("Continue Shopping navigates to Products", async ({ page }) => {
-    const cartPage = new CartPage(page);
     await cartPage.goto();
     await cartPage.continueShopping();
     await expect(page).toHaveURL(/inventory/);
@@ -54,8 +55,6 @@ test.describe("Cart Functionality", () => {
   });
 
   test("Checkout button navigates to checkout", async ({ page }) => {
-    const inventoryPage = new InventoryPage(page);
-    const cartPage = new CartPage(page);
     await inventoryPage.goto();
     await inventoryPage.addProduct(0);
     await inventoryPage.openCart();

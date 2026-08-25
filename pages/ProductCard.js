@@ -7,13 +7,9 @@ class ProductCard {
   constructor(page) {
     this.page = page;
     // Header
-    this.burgerMenu = page.locator(
-      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
-    );
+    this.burgerMenu = page.getByRole('button', { name: 'Open menu' });
     this.brandTitle = page.getByText("TTACart", { exact: true });
-    this.cartLink = page.locator(
-      "//a[@id='shopping_cart_container']//*[name()='svg']",
-    );
+    this.cartLink = page.getByRole('link', { name: 'Shopping cart' });
     this.cartBadge = page.locator('[data-test="shopping-cart-badge"]');
     // Product details
     this.pageTitle = page.getByText("Product Details", { exact: true });

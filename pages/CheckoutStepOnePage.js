@@ -7,17 +7,11 @@ class CheckoutStepOnePage {
   constructor(page) {
     this.page = page;
     // Header
-    this.burgerMenu = page.locator(
-      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
-    );
+    this.burgerMenu = page.getByRole('button', { name: 'Open menu' });
     this.brandTitle = page.getByText("TTACart", { exact: true });
-    this.cartLink = page.locator(
-      "//a[@id='shopping_cart_container']//*[name()='svg']",
-    );
+    this.cartLink = page.getByRole('link', { name: 'Shopping cart' });
     // Page
-    this.pageTitle = page.getByText("Checkout: Your Information", {
-      exact: true,
-    });
+    this.pageTitle = page.locator('[data-test="title"]');
     // Form fields
     this.firstNameInput = page.getByRole("textbox", { name: "First Name" });
     this.lastNameInput = page.getByRole("textbox", { name: "Last Name" });

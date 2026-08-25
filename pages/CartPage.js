@@ -7,9 +7,7 @@ class CartPage {
   constructor(page) {
     this.page = page;
     // Header
-    this.burgerMenu = page.locator(
-      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
-    );
+    this.burgerMenu = page.getByRole('button', { name: 'Open menu' });
     this.brandTitle = page.getByText("TTACart", { exact: true });
     this.cartTitle = page.getByText("Your Cart", { exact: true });
     // Page
@@ -29,7 +27,7 @@ class CartPage {
     this.continueShoppingButton = page.getByRole("link", {
       name: "Continue Shopping",
     });
-    this.checkoutButton = page.getByRole("link", { name: /Checkout/i });
+    this.checkoutButton = page.getByRole('link', { name: 'Checkout' });
 
     // Footer
     this.footer = page.locator('[data-test="footer"]');

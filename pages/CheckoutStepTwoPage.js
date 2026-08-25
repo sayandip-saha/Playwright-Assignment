@@ -7,13 +7,9 @@ class CheckoutStepTwoPage {
   constructor(page) {
     this.page = page;
     // Header
-    this.burgerMenu = page.locator(
-      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
-    );
+    this.burgerMenu = page.getByRole('button', { name: 'Open menu' });
     this.brandTitle = page.getByText("TTACart", { exact: true });
-    this.cartLink = page.locator(
-      "//a[@id='shopping_cart_container']//*[name()='svg']",
-    );
+    this.cartLink = page.getByRole('link', { name: 'Shopping cart' });
     // Page
     this.pageTitle = page.getByText("Checkout: Overview", { exact: true });
     // Cart / Order summary
