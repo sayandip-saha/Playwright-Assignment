@@ -6,37 +6,32 @@ class CheckoutStepOnePage {
    */
   constructor(page) {
     this.page = page;
-
     // Header
-    this.burgerMenu = page.locator("#react-burger-menu-btn");
-    this.brandTitle = page.locator(".tta-brand-title");
-    this.cartLink = page.locator('[data-test="shopping-cart-link"]');
-
+    this.burgerMenu = page.locator(
+      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
+    );
+    this.brandTitle = page.getByText("TTACart", { exact: true });
+    this.cartLink = page.locator(
+      "//a[@id='shopping_cart_container']//*[name()='svg']",
+    );
     // Page
-    this.pageTitle = page.locator('[data-test="title"]');
-
+    this.pageTitle = page.getByText("Checkout: Your Information", {
+      exact: true,
+    });
     // Form fields
-    this.firstNameInput = page.locator("#first-name");
-    this.lastNameInput = page.locator("#last-name");
-    this.postalCodeInput = page.locator("#postal-code");
-
+    this.firstNameInput = page.getByRole("textbox", { name: "First Name" });
+    this.lastNameInput = page.getByRole("textbox", { name: "Last Name" });
+    this.postalCodeInput = page.getByRole('textbox', { name: 'Zip/Postal Code' });
     // Buttons
-    this.continueButton = page.locator('[data-test="continue"]');
-
-    this.cancelButton = page.locator('[data-test="cancel"]');
-
+    this.continueButton = page.getByRole("button", { name: "Continue" });
+    this.cancelButton = page.getByText('Cancel', { exact: true });
     // Error
     this.errorMessage = page.getByRole("alert");
-
     // Footer
     this.footer = page.locator('[data-test="footer"]');
-
-    this.twitterIcon = page.locator('[data-test="social-twitter"]');
-
-    this.facebookIcon = page.locator('[data-test="social-facebook"]');
-
-    this.linkedinIcon = page.locator('[data-test="social-linkedin"]');
-
+    this.twitterIcon = page.getByRole("link", { name: "Twitter" });
+    this.facebookIcon = page.getByRole("link", { name: "Facebook" });
+    this.linkedinIcon = page.getByRole("link", { name: "LinkedIn" });
     this.footerText = page.locator('[data-test="footer-copy"]');
   }
 

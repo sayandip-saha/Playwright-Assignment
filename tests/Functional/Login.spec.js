@@ -3,17 +3,19 @@
 import { test, expect } from "@playwright/test";
 import users from "../../data/users.js";
 import LoginPage from "../../pages/LoginPage.js";
+import InventoryPage from "../../pages/InventoryPage.js";
 
 test.describe("Login Functionality", () => {
   test("Login with valid credentials", async ({ page }) => {
     const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
     await loginPage.goto();
     const user = users.standardUser;
     await loginPage.login(user.username, user.password);
     // Verify successful login
     await expect(page).toHaveURL(/inventory/);
     // Verify Products page
-    await expect(loginPage.pageTitle).toHaveText("Products");
+    await expect(inventoryPage.pageTitle).toHaveText("Products");
   });
 
   test("Login with invalid credentials", async ({ page }) => {

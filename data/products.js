@@ -1,4 +1,4 @@
-module.exports = {
+const products = {
     "Test.allTheThings() T-Shirt (Red)": {
         name: "Test.allTheThings() T-Shirt (Red)",
         description: "This classic TTA t-shirt is perfect to wear when cozying up to your keyboard to automate a few tests. Super-soft and comfy ringspun combed cotton.",
@@ -36,3 +36,5 @@ module.exports = {
         imageUrl: "http://www.w3.org/2000/svg"
     },
 }
+
+export default products;

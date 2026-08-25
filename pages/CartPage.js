@@ -6,48 +6,36 @@ class CartPage {
    */
   constructor(page) {
     this.page = page;
-
     // Header
-    this.burgerMenu = page.locator("#react-burger-menu-btn");
-
-    this.brandTitle = page.locator(".tta-brand-title");
-
-    this.cartTitle = page.locator('[data-test="title"]');
-
+    this.burgerMenu = page.locator(
+      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
+    );
+    this.brandTitle = page.getByText("TTACart", { exact: true });
+    this.cartTitle = page.getByText("Your Cart", { exact: true });
     // Page
-    this.pageTitle = page.locator(".page-title");
-
+    this.pageTitle = page.getByText("Your Cart", { exact: true });
     // Cart
-    this.cartHeader = page.locator(".cart-row-head");
-
+    this.cartHeader = page.locator('[data-test="cart-list"]');
     this.cartItems = page.locator('[data-test="inventory-item"]');
-
-    this.emptyCartMessage = page.locator('[data-test="cart-empty"]');
-
-    this.quantity = page.locator(".qty");
-
+    this.emptyCartMessage = page.getByText("Your cart is empty.", {
+      exact: true,
+    });
+    this.quantity = page.locator("div.qty");
     this.cartProductNames = page.locator(".inventory-item-name");
-
-    this.cartPrices = page.locator(".cart-price");
-
-    this.removeButtons = page.locator(".btn-remove");
+    this.cartPrices = page.locator('[data-test="inventory-item-price"]');
+    this.removeButtons = page.getByRole("button", { name: "Remove" });
 
     // Navigation buttons
-    this.continueShoppingButton = page.locator(
-      '[data-test="continue-shopping"]',
-    );
-
-    this.checkoutButton = page.locator('[data-test="checkout"]');
+    this.continueShoppingButton = page.getByRole("link", {
+      name: "Continue Shopping",
+    });
+    this.checkoutButton = page.getByRole("link", { name: /Checkout/i });
 
     // Footer
     this.footer = page.locator('[data-test="footer"]');
-
-    this.twitterIcon = page.locator('[data-test="social-twitter"]');
-
-    this.facebookIcon = page.locator('[data-test="social-facebook"]');
-
-    this.linkedinIcon = page.locator('[data-test="social-linkedin"]');
-
+    this.twitterIcon = page.getByRole("link", { name: "Twitter" });
+    this.facebookIcon = page.getByRole("link", { name: "Facebook" });
+    this.linkedinIcon = page.getByRole("link", { name: "LinkedIn" });
     this.footerText = page.locator('[data-test="footer-copy"]');
   }
 

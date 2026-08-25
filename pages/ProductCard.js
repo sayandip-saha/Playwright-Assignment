@@ -6,61 +6,31 @@ class ProductCard {
    */
   constructor(page) {
     this.page = page;
-
     // Header
-    this.burgerMenu = page.locator("#react-burger-menu-btn");
-    this.brandTitle = page.locator(".tta-brand-title");
+    this.burgerMenu = page.locator(
+      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
+    );
+    this.brandTitle = page.getByText("TTACart", { exact: true });
     this.cartLink = page.locator(
-      '[data-test="shopping-cart-link"]',
+      "//a[@id='shopping_cart_container']//*[name()='svg']",
     );
-    this.cartBadge = page.locator(
-      '[data-test="shopping-cart-badge"]',
-    );
-
+    this.cartBadge = page.locator('[data-test="shopping-cart-badge"]');
     // Product details
-    this.pageTitle = page.locator(".page-title");
-    this.backButton = page.locator(".back-btn");
-    this.productImage = page.locator(".item-img");
-
-    this.productName = page.locator(
-      '[data-test="inventory-item-name"]',
-    );
-
-    this.productDescription = page.locator(
-      '[data-test="inventory-item-desc"]',
-    );
-
-    this.productPrice = page.locator(
-      '[data-test="inventory-item-price"]',
-    );
-
+    this.pageTitle = page.getByText("Product Details", { exact: true });
+    this.backButton = page.getByRole("button", { name: "Back" });
+    this.productImage = page.locator("svg[viewBox='0 0 120 120']");
+    this.productName = page.getByRole("heading");
+    this.productDescription = page.locator('[data-test="inventory-item-desc"]');
+    this.productPrice = page.locator('[data-test="inventory-item-price"]');
     // Cart buttons
-    this.addToCartButton = page.locator(
-      '[data-test="add-to-cart"]',
-    );
-
-    this.removeButton = page.locator(
-      '[data-test="remove"]',
-    );
-
+    this.addToCartButton = page.getByRole('button', { name: 'Add to cart' });
+    this.removeButton = page.getByRole('button', { name: 'Remove' });
     // Footer
     this.footer = page.locator('[data-test="footer"]');
-
-    this.twitterIcon = page.locator(
-      '[data-test="social-twitter"]',
-    );
-
-    this.facebookIcon = page.locator(
-      '[data-test="social-facebook"]',
-    );
-
-    this.linkedinIcon = page.locator(
-      '[data-test="social-linkedin"]',
-    );
-
-    this.footerText = page.locator(
-      '[data-test="footer-copy"]',
-    );
+    this.twitterIcon = page.getByRole("link", { name: "Twitter" });
+    this.facebookIcon = page.getByRole("link", { name: "Facebook" });
+    this.linkedinIcon = page.getByRole("link", { name: "LinkedIn" });
+    this.footerText = page.locator('[data-test="footer-copy"]');
   }
 
   /**

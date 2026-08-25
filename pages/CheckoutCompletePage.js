@@ -6,36 +6,29 @@ class CheckoutCompletePage {
    */
   constructor(page) {
     this.page = page;
-
     // Header
-    this.burgerMenu = page.locator("#react-burger-menu-btn");
-
-    this.brandTitle = page.locator(".tta-brand-title");
-
-    this.cartLink = page.locator('[data-test="shopping-cart-link"]');
-
+    this.burgerMenu = page.locator(
+      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
+    );
+    this.brandTitle = page.getByText("TTACart", { exact: true });
+    this.cartLink = page.locator(
+      "//a[@id='shopping_cart_container']//*[name()='svg']",
+    );
     // Page
-    this.pageTitle = page.locator('[data-test="title"]');
-
+    this.pageTitle = page.getByText("Checkout: Complete!", { exact: true });
     // Order confirmation
-    this.successIcon = page.locator(".tick");
-
-    this.completeHeader = page.locator('[data-test="complete-header"]');
-
+    this.successIcon = page.locator('[data-test="pony-express"]');
+    this.completeHeader = page.getByRole("heading", {
+      name: "Thank you for your order!",
+    });
     this.completeText = page.locator('[data-test="complete-text"]');
-
     // Button
-    this.backToProductsButton = page.locator('[data-test="back-to-products"]');
-
+    this.backToProductsButton = page.getByRole("link", { name: "Back Home" });
     // Footer
     this.footer = page.locator('[data-test="footer"]');
-
-    this.twitterIcon = page.locator('[data-test="social-twitter"]');
-
-    this.facebookIcon = page.locator('[data-test="social-facebook"]');
-
-    this.linkedinIcon = page.locator('[data-test="social-linkedin"]');
-
+    this.twitterIcon = page.getByRole("link", { name: "Twitter" });
+    this.facebookIcon = page.getByRole("link", { name: "Facebook" });
+    this.linkedinIcon = page.getByRole("link", { name: "LinkedIn" });
     this.footerText = page.locator('[data-test="footer-copy"]');
   }
 

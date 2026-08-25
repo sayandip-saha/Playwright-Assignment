@@ -6,19 +6,14 @@ class LoginPage {
    */
   constructor(page) {
     this.page = page;
-
     // Locators
-    this.usernameInput = page.locator("#user-name");
-    this.passwordInput = page.locator("#password");
-    this.loginButton = page.locator("#login-button");
-
-    this.brandTitle = page.locator(".tta-brand-title");
-    this.loginCard = page.locator(".login-card");
-    this.loginHint = page.locator(".login-hint");
-
+    this.usernameInput = page.getByPlaceholder("Username");
+    this.passwordInput = page.getByPlaceholder("Password");
+    this.loginButton = page.getByRole("button", { name: "Login" });
+    this.brandTitle = page.getByRole("heading", { name: "TTACart" });
+    this.loginCard = page.locator('[data-test="login-container"]');
+    this.loginHint = page.locator("div.login-hint");
     this.errorMessage = page.getByRole("alert");
-
-    this.pageTitle = page.locator(".page-title");
   }
 
   async goto() {

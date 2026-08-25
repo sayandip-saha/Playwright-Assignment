@@ -6,40 +6,29 @@ class CheckoutStepTwoPage {
    */
   constructor(page) {
     this.page = page;
-
     // Header
-    this.burgerMenu = page.locator("#react-burger-menu-btn");
-
-    this.brandTitle = page.locator(".tta-brand-title");
-
-    this.cartLink = page.locator('[data-test="shopping-cart-link"]');
-
+    this.burgerMenu = page.locator(
+      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
+    );
+    this.brandTitle = page.getByText("TTACart", { exact: true });
+    this.cartLink = page.locator(
+      "//a[@id='shopping_cart_container']//*[name()='svg']",
+    );
     // Page
-    this.pageTitle = page.locator('[data-test="title"]');
-
+    this.pageTitle = page.getByText("Checkout: Overview", { exact: true });
     // Cart / Order summary
-    this.cartHeader = page.locator(".cart-row-head");
-
-    this.summaryBlock = page.locator(".summary-block");
-
+    this.cartHeader = page.locator('[data-test="cart-list"]');
+    this.summaryBlock = page.locator("div.summary-block");
     this.cartItems = page.locator('[data-test="inventory-item"]');
-
     this.productNames = page.locator('[data-test="inventory-item-name"]');
-
     // Buttons
-    this.cancelButton = page.locator('[data-test="cancel"]');
-
-    this.finishButton = page.locator('[data-test="finish"]');
-
+    this.cancelButton = page.getByRole("link", { name: "Cancel" });
+    this.finishButton = page.getByRole("button", { name: "Finish" });
     // Footer
     this.footer = page.locator('[data-test="footer"]');
-
-    this.twitterIcon = page.locator('[data-test="social-twitter"]');
-
-    this.facebookIcon = page.locator('[data-test="social-facebook"]');
-
-    this.linkedinIcon = page.locator('[data-test="social-linkedin"]');
-
+    this.twitterIcon = page.getByRole("link", { name: "Twitter" });
+    this.facebookIcon = page.getByRole("link", { name: "Facebook" });
+    this.linkedinIcon = page.getByRole("link", { name: "LinkedIn" });
     this.footerText = page.locator('[data-test="footer-copy"]');
   }
 

@@ -6,22 +6,23 @@ class InventoryPage {
    */
   constructor(page) {
     this.page = page;
-
     // Header
-    this.burgerMenu = page.locator("#react-burger-menu-btn");
+    this.burgerMenu = page.locator(
+      "//button[@id='react-burger-menu-btn']//*[name()='svg']",
+    );
     this.brandTitle = page.getByText("TTACart", { exact: true });
     this.cartIcon = page.locator(
       "//*[name()='path' and contains(@d,'M3 3h2l2.4')]",
     );
-    this.cartLink = page.locator('[data-test="shopping-cart-link"]');
+    this.cartLink = page.locator(
+      "//a[@id='shopping_cart_container']//*[name()='svg']",
+    );
     this.cartBadge = page.locator('[data-test="shopping-cart-badge"]');
-
     // Page
-    this.pageTitle = page.locator(".page-title");
+    this.pageTitle = page.getByText("Products", { exact: true });
     this.sortDropdown = page.getByRole("combobox", {
       name: "Sort products",
     });
-
     // Products
     this.products = page.locator('[data-test="inventory-item"]');
     this.productButtons = page.locator(".item-btn");
@@ -29,15 +30,13 @@ class InventoryPage {
     this.productDescriptions = page.locator(
       '[data-test="inventory-item-desc"]',
     );
-
     this.productPrices = page.locator('[data-test="inventory-item-price"]');
     this.productImages = page.locator('[data-test="item-img-link"]');
-
     // Footer
     this.footer = page.locator('[data-test="footer"]');
-    this.twitterIcon = page.locator('[data-test="social-twitter"]');
-    this.facebookIcon = page.locator('[data-test="social-facebook"]');
-    this.linkedinIcon = page.locator('[data-test="social-linkedin"]');
+    this.twitterIcon = page.getByRole("link", { name: "Twitter" });
+    this.facebookIcon = page.getByRole("link", { name: "Facebook" });
+    this.linkedinIcon = page.getByRole("link", { name: "LinkedIn" });
     this.footerText = page.locator('[data-test="footer-copy"]');
   }
 
