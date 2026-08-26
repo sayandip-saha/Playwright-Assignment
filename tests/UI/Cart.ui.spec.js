@@ -4,42 +4,30 @@ import { test, expect } from "@playwright/test";
 import CartPage from "../../pages/CartPage.js";
 
 test.describe("Cart Page UI", () => {
-  test("Show burger menu", async ({ page }) => {
-    const cartPage = new CartPage(page);
+  /** @type {CartPage} */
+  let cartPage;
+
+  test.beforeEach(async ({ page }) => {
+    cartPage = new CartPage(page);
     await cartPage.goto();
+  });
+
+  test("Show cart page header", async () => {
+    // Burger menu
     await expect(cartPage.burgerMenu).toBeVisible();
-  });
-
-  test("Show Title", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+    // Brand title
     await expect(cartPage.brandTitle).toHaveText(/TTACart/);
-  });
-
-  test("Show Cart", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+    // Cart icon/title
     await expect(cartPage.cartTitle).toBeVisible();
-  });
-
-  test("Show Your Cart", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+    // Page title
     await expect(cartPage.pageTitle).toHaveText("Your Cart");
-  });
-
-  test("Show QTY and Description", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+    // Cart headers
     await expect(cartPage.cartHeader).toContainText("QTY");
     await expect(cartPage.cartHeader).toContainText("Description");
   });
 
-  test("Show Cart Contents or Empty Message", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+  test("Show Cart Contents or Empty Message", async () => {
     const hasItems = await cartPage.cartItems.first().isVisible();
-
     if (hasItems) {
       await expect(cartPage.cartItems.first()).toBeVisible();
       await expect(cartPage.quantity.first()).toBeVisible();
@@ -54,39 +42,26 @@ test.describe("Cart Page UI", () => {
     }
   });
 
-  test("Show Continue Shopping Button", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+  test("Show Cart action buttons", async () => {
+    // Continue Shopping
     await expect(cartPage.continueShoppingButton).toHaveText(
       "Continue Shopping",
     );
     await expect(cartPage.continueShoppingButton).toHaveClass(/btn-continue/);
-  });
-
-  test("Show Checkout Button", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+    // Checkout
     await expect(cartPage.checkoutButton).toContainText("Checkout");
     await expect(cartPage.checkoutButton).toHaveClass(/btn-primary/);
   });
 
-  test("Show Footer", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+  test("Show Footer", async () => {
+    // Footer
     await expect(cartPage.footer).toBeVisible();
-  });
-
-  test("Show Footer icons", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+    // Footer icons
     await expect(cartPage.twitterIcon).toBeVisible();
     await expect(cartPage.facebookIcon).toBeVisible();
     await expect(cartPage.linkedinIcon).toBeVisible();
-  });
 
-  test("Show Footer text", async ({ page }) => {
-    const cartPage = new CartPage(page);
-    await cartPage.goto();
+    // Footer text
     await expect(cartPage.footerText).toHaveText(
       "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
     );

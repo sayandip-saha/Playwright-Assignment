@@ -4,69 +4,56 @@ import { test, expect } from "@playwright/test";
 import CheckoutCompletePage from "../../pages/CheckoutCompletePage.js";
 
 test.describe("Checkout Complete UI", () => {
-  test("Show burger menu", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
+  /** @type {CheckoutCompletePage} */
+  let checkoutComplete;
+
+  test.beforeEach(async ({ page }) => {
+    checkoutComplete = new CheckoutCompletePage(page);
     await checkoutComplete.goto();
+  });
+  
+  test("Show checkout complete header", async () => {
+    // Burger menu
     await expect(checkoutComplete.burgerMenu).toBeVisible();
-  });
-
-  test("Show Title", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+    // Brand title
     await expect(checkoutComplete.brandTitle).toHaveText(/TTACart/);
-  });
-
-  test("Show Your Cart", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+    // Cart link
     await expect(checkoutComplete.cartLink).toBeVisible();
-  });
 
-  test("Show Checkout Complete Title", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+    // Page title
     await expect(checkoutComplete.pageTitle).toContainText(
       "Checkout: Complete!",
     );
   });
 
-  test("Show Product Summary", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+  test("Show order completion details", async () => {
+    // Success icon
     await expect(checkoutComplete.successIcon).toBeVisible();
+    // Confirmation message
     await expect(checkoutComplete.completeHeader).toContainText(
       "Thank you for your order!",
     );
+    // Order dispatch message
     await expect(checkoutComplete.completeText).toContainText(
       "Your order has been dispatched",
     );
   });
 
-  test("Show Back to Home Button", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+  test("Show Back Home button", async () => {
     await expect(checkoutComplete.backToProductsButton).toContainText(
       "Back Home",
     );
   });
 
-  test("Show Footer", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+  test("Show Footer", async () => {
+    // Footer
     await expect(checkoutComplete.footer).toBeVisible();
-  });
-
-  test("Show Footer icons", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+    // Footer icons
     await expect(checkoutComplete.twitterIcon).toBeVisible();
     await expect(checkoutComplete.facebookIcon).toBeVisible();
     await expect(checkoutComplete.linkedinIcon).toBeVisible();
-  });
 
-  test("Show Footer text", async ({ page }) => {
-    const checkoutComplete = new CheckoutCompletePage(page);
-    await checkoutComplete.goto();
+    // Footer text
     await expect(checkoutComplete.footerText).toHaveText(
       "(c) 2026 TTACart - The Testing Academy. All Rights Reserved. Terms of Service | Privacy Policy",
     );
